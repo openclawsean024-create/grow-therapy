@@ -33,7 +33,7 @@ export default function BillingPage() {
     try {
       const res = await fetch('/api/billing');
       const data = await res.json();
-      setBillings(data);
+      setBillings(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {

@@ -42,7 +42,9 @@ export default function BookingPage() {
     try {
       const res = await fetch(`/api/therapists/${params.therapistId}`);
       const data = await res.json();
-      setTherapist(data);
+      if (data && typeof data === 'object' && !Array.isArray(data) && 'name' in data) {
+        setTherapist(data);
+      }
     } catch {
       console.error('Failed to fetch therapist');
     } finally {

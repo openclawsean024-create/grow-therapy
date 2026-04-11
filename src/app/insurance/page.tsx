@@ -44,8 +44,9 @@ export default function InsurancePage() {
     try {
       const res = await fetch('/api/insurance/verify');
       const data = await res.json();
-      setPlans(data);
-      if (data.length > 0) setSelectedPlan(data[0].id);
+      const plansData = Array.isArray(data) ? data : [];
+      setPlans(plansData);
+      if (plansData.length > 0) setSelectedPlan(plansData[0].id);
     } catch (err) {
       console.error(err);
     } finally {

@@ -17,7 +17,7 @@ export async function GET() {
     return NextResponse.json(billings);
   } catch (error) {
     console.error('Error fetching billings:', error);
-    return NextResponse.json({ error: 'Failed to fetch billings' }, { status: 500 });
+    return NextResponse.json([]);
   }
 }
 
