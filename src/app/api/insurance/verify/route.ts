@@ -7,6 +7,8 @@ const MOCK_PLANS: Record<string, { name: string; coversMentalHealth: boolean; co
   'mock-insurance-3': { name: 'UnitedHealth Choice', coversMentalHealth: true, copayAmount: 35, coveragePercent: 75, maxSessionsPerYear: 25 },
 };
 
+const isMockPlan = (id: string) => id in MOCK_PLANS;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -16,33 +18,45 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Try DB lookup first, fall back to mock plans
-    let plan: { id: string; name: string; coversMentalHealth: boolean; copayAmount: number; coveragePercent: number; maxSessionsPerYear: number | null } | null = null;
+    // Check mock plans first (no DB required)
+    if (isMockPlan(insurancePlanId)) {
+      const mockPlan = { id: insurancePlanId, ...MOCK_PLANS[insurancePlanId] };
+      const isMentalHealthService = serviceType.toLowerCase().includes('therapy') ||
+        serviceType.toLowerCase().includes('psych') ||
+        serviceType.toLowerCase().includes('counsel');
+      const covered = mockPlan.coversMentalHealth && isMentalHealthService;
 
-    if (insurancePlanId in MOCK_PLANS) {
-      plan = { id: insurancePlanId, ...MOCK_PLANS[insurancePlanId] };
-    } else {
-      try {
-        const dbPlan = await prisma.insurancePlan.findUnique({
-          where: { id: insurancePlanId },
-        });
-        plan = dbPlan;
-      } catch (dbError) {
-        console.error('DB lookup failed, falling back to mock:', dbError);
-        // If DB fails, check if it's a mock ID
-        plan = null;
-      }
+      return NextResponse.json({
+        insurancePlanId: mockPlan.id,
+        insurancePlanName: mockPlan.name,
+        serviceType,
+        covered,
+        copayAmount: covered ? mockPlan.copayAmount : null,
+        coveragePercent: covered ? mockPlan.coveragePercent : null,
+        maxSessionsPerYear: mockPlan.maxSessionsPerYear,
+        message: covered
+          ? `✓ ${mockPlan.name} covers ${serviceType}. You pay a $${mockPlan.copayAmount} copay.`
+          : `✗ ${mockPlan.name} does not cover ${serviceType}.`,
+      });
+    }
+
+    // DB lookup for real plans
+    let plan = null;
+    try {
+      plan = await prisma.insurancePlan.findUnique({
+        where: { id: insurancePlanId },
+      });
+    } catch (dbError) {
+      console.error('DB lookup failed:', dbError);
     }
 
     if (!plan) {
       return NextResponse.json({ error: 'Insurance plan not found' }, { status: 404 });
     }
 
-    // Mock verification logic
     const isMentalHealthService = serviceType.toLowerCase().includes('therapy') ||
       serviceType.toLowerCase().includes('psych') ||
       serviceType.toLowerCase().includes('counsel');
-
     const covered = plan.coversMentalHealth && isMentalHealthService;
 
     return NextResponse.json({
