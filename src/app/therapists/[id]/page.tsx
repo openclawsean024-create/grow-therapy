@@ -23,14 +23,16 @@ interface Therapist {
 }
 
 export default function TherapistProfilePage() {
-  const params = useParams();
+  const params = useParams<{ id?: string }>();
+  const therapistId = typeof params.id === 'string' ? params.id : '';
   const [therapist, setTherapist] = useState<Therapist | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const fetchTherapist = useCallback(async () => {
     try {
-      const res = await fetch(`/api/therapists/${params.id}`);
+      if (!therapistId) throw new Error('Missing therapist id');
+      const res = await fetch(`/api/therapists/${therapistId}`);
       if (!res.ok) throw new Error('Therapist not found');
       const data = await res.json();
       setTherapist(data);
@@ -39,7 +41,7 @@ export default function TherapistProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [params.id]);
+  }, [therapistId]);
 
   useEffect(() => {
     fetchTherapist();

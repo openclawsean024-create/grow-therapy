@@ -23,7 +23,8 @@ interface Patient {
 const TIME_SLOTS = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
 
 export default function BookingPage() {
-  const params = useParams();
+  const params = useParams<{ therapistId?: string }>();
+  const therapistId = typeof params.therapistId === 'string' ? params.therapistId : '';
   const searchParams = useSearchParams();
   const [therapist, setTherapist] = useState<Therapist | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -31,16 +32,22 @@ export default function BookingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(addDays(new Date(), 1));
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedPatient, setSelectedPatient] = useState('');
   const [sessionType, setSessionType] = useState('therapy');
 
   const bookedSlots = ['10:00 AM', '2:00 PM'];
 
+  // Set default date only on client to avoid hydration mismatch
+  useEffect(() => {
+    setSelectedDate(addDays(new Date(), 1));
+  }, []);
+
   const fetchTherapist = useCallback(async () => {
     try {
-      const res = await fetch(`/api/therapists/${params.therapistId}`);
+      if (!therapistId) throw new Error('Missing therapist id');
+      const res = await fetch(`/api/therapists/${therapistId}`);
       const data = await res.json();
       if (data && typeof data === 'object' && !Array.isArray(data) && 'name' in data) {
         setTherapist(data);
@@ -50,7 +57,7 @@ export default function BookingPage() {
     } finally {
       setLoading(false);
     }
-  }, [params.therapistId]);
+  }, [therapistId]);
 
   useEffect(() => {
     fetchTherapist();
@@ -60,7 +67,7 @@ export default function BookingPage() {
       const d = new Date(slot);
       setSelectedDate(d);
     }
-  }, [fetchTherapist, searchParams]);
+  }, [fetchTherapist, searchParams, therapistId]);
 
   async function fetchPatients() {
     setPatients([
@@ -76,13 +83,13 @@ export default function BookingPage() {
 
     setSubmitting(true);
     try {
-      const dateTime = new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${convertTo24Hour(selectedTime)}:00`);
+      const dateTime = new Date(`${selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''}T${convertTo24Hour(selectedTime)}:00`);
 
       const res = await fetch('/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          therapistId: params.therapistId,
+          therapistId,
           patientId: selectedPatient,
           dateTime: dateTime.toISOString(),
           durationMins: 50,
@@ -132,7 +139,7 @@ export default function BookingPage() {
             </div>
             <h2 className="text-2xl font-bold text-slate-800 mb-2">Appointment Booked!</h2>
             <p className="text-slate-600 mb-6">
-              Your appointment with {therapist?.name} has been scheduled for {formatDate(selectedDate)} at {selectedTime}.
+              Your appointment with {therapist?.name} has been scheduled for {formatDate(selectedDate ?? new Date())} at {selectedTime}.
             </p>
             <Link
               href="/dashboard"
@@ -152,7 +159,7 @@ export default function BookingPage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href={`/therapists/${params.therapistId}`} className="text-emerald-600 hover:text-emerald-700 text-sm mb-4 inline-flex items-center gap-1">
+        <Link href={`/therapists/${therapistId}`} className="text-emerald-600 hover:text-emerald-700 text-sm mb-4 inline-flex items-center gap-1">
           ← Back to Profile
         </Link>
 
@@ -181,7 +188,7 @@ export default function BookingPage() {
                     type="button"
                     onClick={() => setSelectedDate(date)}
                     className={`flex-shrink-0 px-4 py-3 rounded-lg border text-center transition-colors ${
-                      format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
+                      format(date, 'yyyy-MM-dd') === (selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '')
                         ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                         : 'border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
@@ -251,7 +258,7 @@ export default function BookingPage() {
               <div className="bg-slate-50 rounded-lg p-4">
                 <h3 className="font-medium text-slate-800 mb-2">Booking Summary</h3>
                 <div className="text-sm text-slate-600 space-y-1">
-                  <p><span className="font-medium">Date:</span> {formatDate(selectedDate)}</p>
+                  <p><span className="font-medium">Date:</span> {formatDate(selectedDate ?? new Date())}</p>
                   <p><span className="font-medium">Time:</span> {selectedTime}</p>
                   <p><span className="font-medium">Session:</span> {sessionType}</p>
                   <p><span className="font-medium">Cost:</span> ${therapist?.hourlyRate}</p>
