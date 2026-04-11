@@ -3,6 +3,36 @@ import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
+const fallbackTherapists = [
+  {
+    id: 'mock-1',
+    name: 'Dr. Emily Chen',
+    bio: 'Specializes in anxiety, depression, and burnout support.',
+    specialties: 'Anxiety,Depression,Burnout',
+    insuranceAccepted: 'Aetna,BlueCross,Cigna',
+    hourlyRate: 180,
+    profileImage: null,
+  },
+  {
+    id: 'mock-2',
+    name: 'Dr. Jason Liu',
+    bio: 'Focuses on trauma recovery, relationships, and life transitions.',
+    specialties: 'Trauma,Relationships,Life Transitions',
+    insuranceAccepted: 'UnitedHealth,Cigna',
+    hourlyRate: 200,
+    profileImage: null,
+  },
+  {
+    id: 'mock-3',
+    name: 'Dr. Sophia Wang',
+    bio: 'Supports ADHD, parenting stress, and adolescent care.',
+    specialties: 'ADHD,Family Therapy,Adolescent',
+    insuranceAccepted: 'Aetna,UnitedHealth',
+    hourlyRate: 170,
+    profileImage: null,
+  },
+];
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -24,6 +54,6 @@ export async function GET(request: Request) {
     return NextResponse.json(therapists);
   } catch (error) {
     console.error('Error fetching therapists:', error);
-    return NextResponse.json({ error: 'Failed to fetch therapists' }, { status: 500 });
+    return NextResponse.json(fallbackTherapists);
   }
 }

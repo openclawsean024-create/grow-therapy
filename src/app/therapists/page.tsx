@@ -31,7 +31,7 @@ export default function TherapistsPage() {
 
     const res = await fetch(`/api/therapists?${params.toString()}`);
     const data = await res.json();
-    setTherapists(data);
+    setTherapists(Array.isArray(data) ? data : []);
     setLoading(false);
   }, [selectedSpecialty, selectedInsurance]);
 

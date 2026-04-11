@@ -35,7 +35,7 @@ export default function DashboardPage() {
     try {
       const res = await fetch('/api/appointments');
       const data = await res.json();
-      setAppointments(data);
+      setAppointments(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {
