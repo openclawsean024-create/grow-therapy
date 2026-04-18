@@ -167,7 +167,7 @@ export default function BookingPage() {
           <div className="p-6 bg-slate-50 border-b border-slate-200">
             <div className="flex items-center gap-4">
               <img
-                src={therapist?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(therapist?.name || '')}&background=10b981&color=fff`}
+                src={therapist?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(therapist?.name || '')}&background=4A90D9&color=fff`}
                 alt={therapist?.name || ''}
                 className="w-12 h-12 rounded-full object-cover"
               />

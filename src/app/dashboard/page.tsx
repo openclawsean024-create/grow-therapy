@@ -136,7 +136,7 @@ export default function DashboardPage() {
                 <div key={apt.id} className="p-6 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <img
-                      src={apt.therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(apt.therapist.name)}&background=10b981&color=fff`}
+                      src={apt.therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(apt.therapist.name)}&background=4A90D9&color=fff`}
                       alt={apt.therapist.name}
                       className="w-12 h-12 rounded-full object-cover"
                     />

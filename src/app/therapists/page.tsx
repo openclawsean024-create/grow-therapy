@@ -123,7 +123,7 @@ function TherapistCard({ therapist }: { therapist: Therapist }) {
       <div className="p-6">
         <div className="flex items-start gap-4">
           <img
-            src={therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(therapist.name)}&background=10b981&color=fff`}
+            src={therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(therapist.name)}&background=4A90D9&color=fff`}
             alt={therapist.name}
             className="w-16 h-16 rounded-full object-cover"
           />

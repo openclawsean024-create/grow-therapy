@@ -87,7 +87,7 @@ export default function TherapistProfilePage() {
           <div className="p-6">
             <div className="flex items-start gap-6">
               <img
-                src={therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(therapist.name)}&background=10b981&color=fff&size=128`}
+                src={therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(therapist.name)}&background=4A90D9&color=fff&size=128`}
                 alt={therapist.name}
                 className="w-24 h-24 rounded-full object-cover"
               />
