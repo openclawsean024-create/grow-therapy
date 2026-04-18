@@ -78,15 +78,15 @@ export default function BookingPage() {
         </div>
 
         {/* Quick Book CTA */}
-        <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100 mb-8">
+        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-emerald-800">Find a Therapist</h3>
-              <p className="text-sm text-emerald-600">Browse and book a new session</p>
+              <h3 className="font-semibold text-blue-800">Find a Therapist</h3>
+              <p className="text-sm text-blue-600">Browse and book a new session</p>
             </div>
             <Link
               href="/search"
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
             >
               Find a Therapist
             </Link>
@@ -100,7 +100,7 @@ export default function BookingPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === f ? 'bg-emerald-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                filter === f ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -169,7 +169,7 @@ export default function BookingPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const statusClasses: Record<string, string> = {
-    scheduled: 'bg-emerald-100 text-emerald-700',
+    scheduled: 'bg-blue-100 text-blue-700',
     completed: 'bg-blue-100 text-blue-700',
     cancelled: 'bg-red-100 text-red-700',
     rescheduled: 'bg-yellow-100 text-yellow-700',

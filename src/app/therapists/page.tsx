@@ -58,7 +58,7 @@ export default function TherapistsPage() {
               <select
                 value={selectedSpecialty}
                 onChange={(e) => setSelectedSpecialty(e.target.value)}
-                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Specialties</option>
                 {SPECIALTIES.map((s) => (
@@ -71,7 +71,7 @@ export default function TherapistsPage() {
               <select
                 value={selectedInsurance}
                 onChange={(e) => setSelectedInsurance(e.target.value)}
-                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Insurance</option>
                 {INSURANCE_OPTIONS.map((i) => (
@@ -98,7 +98,7 @@ export default function TherapistsPage() {
             <p className="text-slate-500">No therapists found matching your criteria.</p>
             <button
               onClick={() => { setSelectedSpecialty(''); setSelectedInsurance(''); }}
-              className="mt-4 text-emerald-600 hover:text-emerald-700"
+              className="mt-4 text-blue-600 hover:text-blue-700"
             >
               Clear filters
             </button>
@@ -129,7 +129,7 @@ function TherapistCard({ therapist }: { therapist: Therapist }) {
           />
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-slate-800">{therapist.name}</h3>
-            <p className="text-emerald-600 font-medium">${therapist.hourlyRate}/session</p>
+            <p className="text-blue-600 font-medium">${therapist.hourlyRate}/session</p>
           </div>
         </div>
         <p className="mt-4 text-slate-600 text-sm line-clamp-3">{therapist.bio}</p>
@@ -145,7 +145,7 @@ function TherapistCard({ therapist }: { therapist: Therapist }) {
         </div>
         <Link
           href={`/therapists/${therapist.id}`}
-          className="mt-4 block w-full text-center px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+          className="mt-4 block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
         >
           View Profile & Book
         </Link>

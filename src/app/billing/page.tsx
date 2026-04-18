@@ -107,7 +107,7 @@ export default function BillingPage() {
                       <td className="px-6 py-4 text-sm text-slate-600">
                         {formatCurrency(billing.copayAmount)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-emerald-600">
+                      <td className="px-6 py-4 text-sm text-blue-600">
                         {formatCurrency(billing.insuranceCoverage)}
                       </td>
                       <td className="px-6 py-4 text-sm font-semibold text-slate-800">
@@ -164,8 +164,8 @@ export default function BillingPage() {
                     <td className="py-3 text-sm text-slate-700 text-right">{formatCurrency(billings[0].totalAmount)}</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 text-sm text-emerald-600">Insurance Coverage ({billings[0].insurancePlan?.name || 'N/A'})</td>
-                    <td className="py-3 text-sm text-emerald-600 text-right">-{formatCurrency(billings[0].insuranceCoverage)}</td>
+                    <td className="py-3 text-sm text-blue-600">Insurance Coverage ({billings[0].insurancePlan?.name || 'N/A'})</td>
+                    <td className="py-3 text-sm text-blue-600 text-right">-{formatCurrency(billings[0].insuranceCoverage)}</td>
                   </tr>
                   <tr>
                     <td className="py-3 text-sm font-medium text-slate-800">Patient Copay</td>
@@ -176,7 +176,7 @@ export default function BillingPage() {
 
               <div className="bg-slate-50 rounded-lg p-4 flex justify-between items-center">
                 <span className="font-semibold text-slate-800">Amount Due</span>
-                <span className="text-2xl font-bold text-emerald-600">{formatCurrency(billings[0].amountDue)}</span>
+                <span className="text-2xl font-bold text-blue-600">{formatCurrency(billings[0].amountDue)}</span>
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function BillingPage() {
 
 function StatCard({ label, value, color = 'slate' }: { label: string; value: string; color?: string }) {
   const colorClasses: Record<string, string> = {
-    emerald: 'bg-emerald-50 text-emerald-700',
+    emerald: 'bg-blue-50 text-blue-700',
     blue: 'bg-blue-50 text-blue-700',
     yellow: 'bg-yellow-50 text-yellow-700',
     slate: 'bg-slate-100 text-slate-700',
@@ -207,7 +207,7 @@ function StatCard({ label, value, color = 'slate' }: { label: string; value: str
 function StatusBadge({ status }: { status: string }) {
   const statusClasses: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-700',
-    paid: 'bg-emerald-100 text-emerald-700',
+    paid: 'bg-blue-100 text-blue-700',
     submitted: 'bg-blue-100 text-blue-700',
   };
 

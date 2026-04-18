@@ -112,7 +112,7 @@ export default function DashboardPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === f ? 'bg-emerald-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+                filter === f ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -179,7 +179,7 @@ export default function DashboardPage() {
 
 function StatCard({ label, value, color = 'slate' }: { label: string; value: number; color?: string }) {
   const colorClasses: Record<string, string> = {
-    emerald: 'bg-emerald-50 text-emerald-700',
+    emerald: 'bg-blue-50 text-blue-700',
     blue: 'bg-blue-50 text-blue-700',
     red: 'bg-red-50 text-red-700',
     slate: 'bg-slate-100 text-slate-700',
@@ -197,7 +197,7 @@ function StatCard({ label, value, color = 'slate' }: { label: string; value: num
 
 function StatusBadge({ status }: { status: string }) {
   const statusClasses: Record<string, string> = {
-    scheduled: 'bg-emerald-100 text-emerald-700',
+    scheduled: 'bg-blue-100 text-blue-700',
     completed: 'bg-blue-100 text-blue-700',
     cancelled: 'bg-red-100 text-red-700',
     rescheduled: 'bg-yellow-100 text-yellow-700',

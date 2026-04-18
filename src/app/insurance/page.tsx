@@ -89,9 +89,9 @@ export default function InsurancePage() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="px-6 py-4 bg-emerald-50 border-b border-emerald-100">
-            <h2 className="font-semibold text-emerald-800">Verify Your Coverage</h2>
-            <p className="text-sm text-emerald-600 mt-1">
+          <div className="px-6 py-4 bg-blue-50 border-b border-blue-100">
+            <h2 className="font-semibold text-blue-800">Verify Your Coverage</h2>
+            <p className="text-sm text-blue-600 mt-1">
               Enter your insurance details to see your estimated coverage
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function InsurancePage() {
                 <select
                   value={selectedPlan}
                   onChange={(e) => setSelectedPlan(e.target.value)}
-                  className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {plans.map((plan) => (
                     <option key={plan.id} value={plan.id}>
@@ -123,7 +123,7 @@ export default function InsurancePage() {
               <select
                 value={selectedService}
                 onChange={(e) => setSelectedService(e.target.value)}
-                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {MOCK_SERVICES.map((service) => (
                   <option key={service} value={service}>{service}</option>
@@ -134,7 +134,7 @@ export default function InsurancePage() {
             <button
               type="submit"
               disabled={loading || !selectedPlan}
-              className="w-full px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 disabled:bg-slate-300 transition-colors"
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-300 transition-colors"
             >
               {loading ? 'Verifying...' : 'Verify Coverage'}
             </button>
@@ -142,14 +142,14 @@ export default function InsurancePage() {
 
           {/* Result */}
           {result && (
-            <div className={`px-6 pb-6 ${result.covered ? 'bg-emerald-50' : 'bg-red-50'}`}>
-              <div className={`p-4 rounded-lg border ${result.covered ? 'border-emerald-200' : 'border-red-200'}`}>
+            <div className={`px-6 pb-6 ${result.covered ? 'bg-blue-50' : 'bg-red-50'}`}>
+              <div className={`p-4 rounded-lg border ${result.covered ? 'border-blue-200' : 'border-red-200'}`}>
                 <div className="flex items-start gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    result.covered ? 'bg-emerald-100' : 'bg-red-100'
+                    result.covered ? 'bg-blue-100' : 'bg-red-100'
                   }`}>
                     {result.covered ? (
-                      <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     ) : (
@@ -159,10 +159,10 @@ export default function InsurancePage() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <h3 className={`font-semibold ${result.covered ? 'text-emerald-800' : 'text-red-800'}`}>
+                    <h3 className={`font-semibold ${result.covered ? 'text-blue-800' : 'text-red-800'}`}>
                       {result.covered ? 'Coverage Confirmed' : 'Not Covered'}
                     </h3>
-                    <p className={`text-sm mt-1 ${result.covered ? 'text-emerald-700' : 'text-red-700'}`}>
+                    <p className={`text-sm mt-1 ${result.covered ? 'text-blue-700' : 'text-red-700'}`}>
                       {result.message}
                     </p>
                     {result.covered && (

@@ -132,8 +132,8 @@ export default function BookingPage() {
         <Navbar />
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
@@ -143,7 +143,7 @@ export default function BookingPage() {
             </p>
             <Link
               href="/dashboard"
-              className="inline-block px-6 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700"
+              className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
             >
               View Dashboard
             </Link>
@@ -159,7 +159,7 @@ export default function BookingPage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href={`/therapists/${therapistId}`} className="text-emerald-600 hover:text-emerald-700 text-sm mb-4 inline-flex items-center gap-1">
+        <Link href={`/therapists/${therapistId}`} className="text-blue-600 hover:text-blue-700 text-sm mb-4 inline-flex items-center gap-1">
           ← Back to Profile
         </Link>
 
@@ -173,7 +173,7 @@ export default function BookingPage() {
               />
               <div>
                 <h2 className="font-semibold text-slate-800">{therapist?.name}</h2>
-                <p className="text-emerald-600">${therapist?.hourlyRate}/session · 50 min</p>
+                <p className="text-blue-600">${therapist?.hourlyRate}/session · 50 min</p>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function BookingPage() {
                     onClick={() => setSelectedDate(date)}
                     className={`flex-shrink-0 px-4 py-3 rounded-lg border text-center transition-colors ${
                       format(date, 'yyyy-MM-dd') === (selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '')
-                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
                         : 'border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
@@ -213,7 +213,7 @@ export default function BookingPage() {
                       disabled={isBooked}
                       className={`px-3 py-2 rounded-lg border text-sm transition-colors ${
                         selectedTime === time
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
                           : isBooked
                           ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
                           : 'border-slate-200 text-slate-700 hover:border-slate-300'
@@ -231,7 +231,7 @@ export default function BookingPage() {
               <select
                 value={sessionType}
                 onChange={(e) => setSessionType(e.target.value)}
-                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="therapy">Therapy Session</option>
                 <option value="intake">Initial Intake</option>
@@ -245,7 +245,7 @@ export default function BookingPage() {
                 value={selectedPatient}
                 onChange={(e) => setSelectedPatient(e.target.value)}
                 required
-                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Choose a patient...</option>
                 {patients.map((p) => (
@@ -269,7 +269,7 @@ export default function BookingPage() {
             <button
               type="submit"
               disabled={!selectedTime || !selectedPatient || submitting}
-              className="w-full px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
             >
               {submitting ? 'Booking...' : 'Confirm Booking'}
             </button>

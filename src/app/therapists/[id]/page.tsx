@@ -64,7 +64,7 @@ export default function TherapistProfilePage() {
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 py-12 text-center">
           <p className="text-slate-500">{error || 'Therapist not found'}</p>
-          <Link href="/therapists" className="text-emerald-600 hover:text-emerald-700 mt-4 inline-block">
+          <Link href="/therapists" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
             Back to Therapists
           </Link>
         </div>
@@ -79,7 +79,7 @@ export default function TherapistProfilePage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/therapists" className="text-emerald-600 hover:text-emerald-700 text-sm mb-4 inline-flex items-center gap-1">
+        <Link href="/therapists" className="text-blue-600 hover:text-blue-700 text-sm mb-4 inline-flex items-center gap-1">
           ← Back to Therapists
         </Link>
 
@@ -93,10 +93,10 @@ export default function TherapistProfilePage() {
               />
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-slate-800">{therapist.name}</h1>
-                <p className="text-emerald-600 font-semibold text-lg mt-1">${therapist.hourlyRate}/session</p>
+                <p className="text-blue-600 font-semibold text-lg mt-1">${therapist.hourlyRate}/session</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {specialties.map((s) => (
-                    <span key={s} className="px-3 py-1 bg-emerald-50 text-emerald-700 text-sm rounded-full">
+                    <span key={s} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full">
                       {s.trim()}
                     </span>
                   ))}
@@ -124,7 +124,7 @@ export default function TherapistProfilePage() {
           <div className="bg-slate-50 px-6 py-4 border-t border-slate-200">
             <Link
               href={`/booking/${therapist.id}`}
-              className="block w-full text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
+              className="block w-full text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
               Book an Appointment
             </Link>
@@ -143,7 +143,7 @@ export default function TherapistProfilePage() {
                   </div>
                   <Link
                     href={`/booking/${therapist.id}?slot=${apt.dateTime}`}
-                    className="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-200"
+                    className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200"
                   >
                     Book
                   </Link>
