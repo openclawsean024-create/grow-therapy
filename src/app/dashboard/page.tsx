@@ -180,7 +180,6 @@ export default function DashboardPage() {
 function StatCard({ label, value, color = 'slate' }: { label: string; value: number; color?: string }) {
   const colorClasses: Record<string, string> = {
     blue: 'bg-blue-50 text-blue-700',
-    blue: 'bg-blue-50 text-blue-700',
     red: 'bg-red-50 text-red-700',
     slate: 'bg-slate-100 text-slate-700',
   };

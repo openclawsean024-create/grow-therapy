@@ -189,7 +189,6 @@ export default function BillingPage() {
 function StatCard({ label, value, color = 'slate' }: { label: string; value: string; color?: string }) {
   const colorClasses: Record<string, string> = {
     blue: 'bg-blue-50 text-blue-700',
-    blue: 'bg-blue-50 text-blue-700',
     yellow: 'bg-yellow-50 text-yellow-700',
     slate: 'bg-slate-100 text-slate-700',
   };
