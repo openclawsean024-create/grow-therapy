@@ -58,7 +58,7 @@ export default function BillingPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard label="Total Billed" value={formatCurrency(totalBilled)} color="slate" />
-          <StatCard label="Collected" value={formatCurrency(totalCollected)} color="emerald" />
+          <StatCard label="Collected" value={formatCurrency(totalCollected)} color="blue" />
           <StatCard label="Pending" value={formatCurrency(totalPending)} color="yellow" />
           <StatCard label="Insurance Claims" value={formatCurrency(totalInsuranceClaims)} color="blue" />
         </div>
@@ -188,7 +188,7 @@ export default function BillingPage() {
 
 function StatCard({ label, value, color = 'slate' }: { label: string; value: string; color?: string }) {
   const colorClasses: Record<string, string> = {
-    emerald: 'bg-blue-50 text-blue-700',
+    blue: 'bg-blue-50 text-blue-700',
     blue: 'bg-blue-50 text-blue-700',
     yellow: 'bg-yellow-50 text-yellow-700',
     slate: 'bg-slate-100 text-slate-700',

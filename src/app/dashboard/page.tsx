@@ -100,7 +100,7 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard label="Total Appointments" value={appointments.length} />
-          <StatCard label="Upcoming" value={upcomingCount} color="emerald" />
+          <StatCard label="Upcoming" value={upcomingCount} color="blue" />
           <StatCard label="Completed" value={completedCount} color="blue" />
           <StatCard label="Cancelled" value={appointments.filter((a) => a.status === 'cancelled').length} color="red" />
         </div>
@@ -179,7 +179,7 @@ export default function DashboardPage() {
 
 function StatCard({ label, value, color = 'slate' }: { label: string; value: number; color?: string }) {
   const colorClasses: Record<string, string> = {
-    emerald: 'bg-blue-50 text-blue-700',
+    blue: 'bg-blue-50 text-blue-700',
     blue: 'bg-blue-50 text-blue-700',
     red: 'bg-red-50 text-red-700',
     slate: 'bg-slate-100 text-slate-700',
