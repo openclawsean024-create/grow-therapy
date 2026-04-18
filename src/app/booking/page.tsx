@@ -1,183 +1,225 @@
 'use client';
 
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import { formatDate, formatTime } from '@/lib/utils';
 
-interface Appointment {
+interface Therapist {
   id: string;
-  dateTime: string;
-  durationMins: number;
-  status: string;
-  type: string;
-  therapist: {
-    id: string;
-    name: string;
-    profileImage: string | null;
-  };
-  patient: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  name: string;
+  specialties: string;
+  profileImage: string | null;
 }
 
+const INSURANCE_OPTIONS = ['Aetna', 'BlueCross', 'UnitedHealth', 'Cigna', 'Other'];
+
+const TIME_SLOTS = [
+  'Monday 9:00 AM',
+  'Monday 2:00 PM',
+  'Tuesday 10:00 AM',
+  'Tuesday 3:00 PM',
+  'Wednesday 11:00 AM',
+  'Wednesday 4:00 PM',
+  'Thursday 9:00 AM',
+  'Thursday 2:00 PM',
+  'Friday 10:00 AM',
+  'Friday 1:00 PM',
+];
+
 export default function BookingPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'scheduled' | 'completed' | 'cancelled'>('scheduled');
+  const [therapists, setTherapists] = useState<Therapist[]>([]);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    insurance: '',
+    preferredTherapist: '',
+    timeSlots: [] as string[],
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchAppointments();
+    fetch('/api/therapists')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setTherapists(data);
+      })
+      .catch(() => {});
   }, []);
 
-  async function fetchAppointments() {
-    try {
-      const res = await fetch('/api/appointments');
-      const data = await res.json();
-      setAppointments(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      setAppointments([]);
-    } finally {
+  function toggleTimeSlot(slot: string) {
+    setFormData((prev) => ({
+      ...prev,
+      timeSlots: prev.timeSlots.includes(slot)
+        ? prev.timeSlots.filter((s) => s !== slot)
+        : [...prev.timeSlots, slot],
+    }));
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    const booking = {
+      id: `booking-${Date.now()}`,
+      ...formData,
+      submittedAt: new Date().toISOString(),
+      status: 'pending',
+    };
+
+    const existing = JSON.parse(localStorage.getItem('grow-therapy-bookings') || '[]');
+    existing.push(booking);
+    localStorage.setItem('grow-therapy-bookings', JSON.stringify(existing));
+
+    setTimeout(() => {
       setLoading(false);
-    }
+      setSubmitted(true);
+    }, 500);
   }
 
-  async function handleCancel(id: string) {
-    if (!confirm('Are you sure you want to cancel this appointment?')) return;
-    try {
-      await fetch(`/api/appointments/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'cancelled' }),
-      });
-      fetchAppointments();
-    } catch (err) {
-      console.error(err);
-    }
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <Navbar />
+        <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 mb-2">預約請求已送出</h2>
+            <p className="text-slate-600 mb-6">我們會在 24 小時內聯繫您</p>
+            <Link
+              href="/search"
+              className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              回到搜尋
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
-
-  const filteredAppointments = appointments.filter((apt) => {
-    if (filter === 'all') return true;
-    return apt.status === filter;
-  });
-
-  const upcoming = appointments.filter((apt) => apt.status === 'scheduled').length;
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800">My Appointments</h1>
-          <p className="text-slate-600 mt-2">
-            {upcoming > 0 ? `You have ${upcoming} upcoming appointment${upcoming > 1 ? 's' : ''}` : 'No upcoming appointments'}
-          </p>
+          <h1 className="text-3xl font-bold text-slate-800">預約申請</h1>
+          <p className="text-slate-600 mt-2">填寫以下表單，我們的團隊將在 24 小時內與您聯繫</p>
         </div>
 
-        {/* Quick Book CTA */}
-        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-8">
-          <div className="flex items-center justify-between">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="px-6 py-4 bg-blue-50 border-b border-blue-100">
+            <h2 className="font-semibold text-blue-800">預約表單</h2>
+            <p className="text-sm text-blue-600 mt-1">請提供您的聯絡資訊與偏好時段</p>
+          </div>
+
+          <div className="p-6 space-y-6">
+            {/* 姓名 */}
             <div>
-              <h3 className="font-semibold text-blue-800">Find a Therapist</h3>
-              <p className="text-sm text-blue-600">Browse and book a new session</p>
+              <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
+                姓名 <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="請輸入您的姓名"
+              />
             </div>
-            <Link
-              href="/search"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-            >
-              Find a Therapist
-            </Link>
-          </div>
-        </div>
 
-        {/* Filters */}
-        <div className="flex gap-2 mb-6">
-          {(['all', 'scheduled', 'completed', 'cancelled'] as const).map((f) => (
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="your@email.com"
+              />
+            </div>
+
+            {/* 保險公司 */}
+            <div>
+              <label htmlFor="insurance" className="block text-sm font-medium text-slate-700 mb-1">
+                保險公司 <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="insurance"
+                required
+                value={formData.insurance}
+                onChange={(e) => setFormData((p) => ({ ...p, insurance: e.target.value }))}
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">請選擇保險公司</option>
+                {INSURANCE_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 指定治療師（選填） */}
+            <div>
+              <label htmlFor="therapist" className="block text-sm font-medium text-slate-700 mb-1">
+                指定治療師（選填）
+              </label>
+              <select
+                id="therapist"
+                value={formData.preferredTherapist}
+                onChange={(e) => setFormData((p) => ({ ...p, preferredTherapist: e.target.value }))}
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">不指定</option>
+                {therapists.map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 可預約時段（多選） */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                可預約時段（多選）<span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {TIME_SLOTS.map((slot) => (
+                  <button
+                    key={slot}
+                    type="button"
+                    onClick={() => toggleTimeSlot(slot)}
+                    className={`px-3 py-2 rounded-lg border text-sm text-left transition-colors ${
+                      formData.timeSlots.includes(slot)
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-slate-200 text-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === f ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
-              }`}
+              type="submit"
+              disabled={loading || !formData.name || !formData.email || !formData.insurance || formData.timeSlots.length === 0}
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
             >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
+              {loading ? '提交中...' : '送出預約申請'}
             </button>
-          ))}
-        </div>
-
-        {/* Appointments List */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-            <h2 className="font-semibold text-slate-800">Appointments</h2>
           </div>
-
-          {loading ? (
-            <div className="p-6 text-center text-slate-500">Loading...</div>
-          ) : filteredAppointments.length === 0 ? (
-            <div className="p-6 text-center text-slate-500">
-              {filter === 'scheduled' ? 'No upcoming appointments.' : `No ${filter} appointments.`}
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-200">
-              {filteredAppointments.map((apt) => (
-                <div key={apt.id} className="p-6 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={apt.therapist.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(apt.therapist.name)}&background=4A90D9&color=fff`}
-                      alt={apt.therapist.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <p className="font-medium text-slate-800">{apt.therapist.name}</p>
-                      <p className="text-sm text-slate-500">{apt.patient.name}</p>
-                      <p className="text-sm text-slate-500">
-                        {formatDate(apt.dateTime)} at {formatTime(apt.dateTime)} · {apt.durationMins} min
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <StatusBadge status={apt.status} />
-                    {apt.status === 'scheduled' && (
-                      <div className="flex gap-2">
-                        <Link
-                          href={`/booking/${apt.therapist.id}`}
-                          className="px-3 py-1.5 text-sm border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50"
-                        >
-                          Reschedule
-                        </Link>
-                        <button
-                          onClick={() => handleCancel(apt.id)}
-                          className="px-3 py-1.5 text-sm border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        </form>
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const statusClasses: Record<string, string> = {
-    scheduled: 'bg-blue-100 text-blue-700',
-    completed: 'bg-blue-100 text-blue-700',
-    cancelled: 'bg-red-100 text-red-700',
-    rescheduled: 'bg-yellow-100 text-yellow-700',
-  };
-
-  return (
-    <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusClasses[status] || 'bg-slate-100 text-slate-700'}`}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
   );
 }

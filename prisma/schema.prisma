@@ -16,6 +16,9 @@ model Therapist {
   insuranceAccepted   String        // comma-separated
   hourlyRate          Float
   profileImage        String?
+  languages           String        @default("English") // comma-separated
+  experience          Int           @default(5)         // years
+  licenseInfo         String        @default("")        // e.g. "Licensed Clinical Psychologist, CA #PSY12345"
   appointments        Appointment[]
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt

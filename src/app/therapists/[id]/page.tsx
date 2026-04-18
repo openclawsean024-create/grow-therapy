@@ -14,6 +14,9 @@ interface Therapist {
   insuranceAccepted: string;
   hourlyRate: number;
   profileImage: string | null;
+  languages: string;
+  experience: number;
+  licenseInfo: string;
   appointments: Array<{
     id: string;
     dateTime: string;
@@ -35,7 +38,14 @@ export default function TherapistProfilePage() {
       const res = await fetch(`/api/therapists/${therapistId}`);
       if (!res.ok) throw new Error('Therapist not found');
       const data = await res.json();
-      setTherapist(data);
+      // Merge with defaults for missing fields
+      setTherapist({
+        languages: '',
+        experience: 5,
+        licenseInfo: 'Licensed Mental Health Professional',
+        appointments: [],
+        ...data,
+      });
     } catch {
       setError('Failed to load therapist');
     } finally {
@@ -64,23 +74,24 @@ export default function TherapistProfilePage() {
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 py-12 text-center">
           <p className="text-slate-500">{error || 'Therapist not found'}</p>
-          <Link href="/therapists" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
-            Back to Therapists
+          <Link href="/search" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
+            Back to Search
           </Link>
         </div>
       </div>
     );
   }
 
-  const specialties = therapist.specialties.split(',');
-  const insurance = therapist.insuranceAccepted.split(',');
+  const specialties = therapist.specialties?.split(',') || [];
+  const languages = therapist.languages?.split(',') || [];
+  const insurance = therapist.insuranceAccepted?.split(',') || [];
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/therapists" className="text-blue-600 hover:text-blue-700 text-sm mb-4 inline-flex items-center gap-1">
-          ← Back to Therapists
+        <Link href="/search" className="text-blue-600 hover:text-blue-700 text-sm mb-4 inline-flex items-center gap-1">
+          ← Back to Search
         </Link>
 
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -94,6 +105,14 @@ export default function TherapistProfilePage() {
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-slate-800">{therapist.name}</h1>
                 <p className="text-blue-600 font-semibold text-lg mt-1">${therapist.hourlyRate}/session</p>
+                {languages.length > 0 && (
+                  <p className="text-sm text-slate-500 mt-1">
+                    {languages.map((l) => l.trim()).join(', ')}
+                  </p>
+                )}
+                {therapist.experience > 0 && (
+                  <p className="text-sm text-slate-500">{therapist.experience} years experience</p>
+                )}
                 <div className="mt-4 flex flex-wrap gap-2">
                   {specialties.map((s) => (
                     <span key={s} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full">
@@ -109,6 +128,20 @@ export default function TherapistProfilePage() {
               <p className="text-slate-600">{therapist.bio}</p>
             </div>
 
+            {therapist.experience > 0 && (
+              <div className="mt-6">
+                <h2 className="text-lg font-semibold text-slate-800 mb-2">Experience</h2>
+                <p className="text-slate-600">{therapist.experience} years of clinical practice</p>
+              </div>
+            )}
+
+            {therapist.licenseInfo && (
+              <div className="mt-6">
+                <h2 className="text-lg font-semibold text-slate-800 mb-2">License & Credentials</h2>
+                <p className="text-slate-600">{therapist.licenseInfo}</p>
+              </div>
+            )}
+
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-slate-800 mb-2">Insurance Accepted</h2>
               <div className="flex flex-wrap gap-2">
@@ -123,7 +156,7 @@ export default function TherapistProfilePage() {
 
           <div className="bg-slate-50 px-6 py-4 border-t border-slate-200">
             <Link
-              href={`/booking/${therapist.id}`}
+              href="/booking"
               className="block w-full text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
               Book an Appointment
@@ -142,7 +175,7 @@ export default function TherapistProfilePage() {
                     <p className="text-slate-500 text-sm">{formatTime(apt.dateTime)} · {apt.durationMins} min</p>
                   </div>
                   <Link
-                    href={`/booking/${therapist.id}?slot=${apt.dateTime}`}
+                    href="/booking"
                     className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200"
                   >
                     Book

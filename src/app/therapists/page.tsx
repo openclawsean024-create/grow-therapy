@@ -12,16 +12,19 @@ interface Therapist {
   insuranceAccepted: string;
   hourlyRate: number;
   profileImage: string | null;
+  languages: string;
 }
 
 const SPECIALTIES = ['Anxiety', 'Depression', 'Trauma', 'Relationships', 'OCD', 'ADHD', 'Grief', 'Family Therapy', 'Child', 'Adolescent'];
 const INSURANCE_OPTIONS = ['Aetna', 'BlueCross', 'UnitedHealth', 'Cigna'];
+const LOCATIONS = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 'Phoenix, AZ', 'San Francisco, CA', 'Seattle, WA', 'Boston, MA'];
 
 export default function TherapistsPage() {
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [selectedInsurance, setSelectedInsurance] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   const fetchTherapists = useCallback(async () => {
     setLoading(true);
@@ -29,10 +32,15 @@ export default function TherapistsPage() {
     if (selectedSpecialty) params.set('specialty', selectedSpecialty);
     if (selectedInsurance) params.set('insurance', selectedInsurance);
 
-    const res = await fetch(`/api/therapists?${params.toString()}`);
-    const data = await res.json();
-    setTherapists(Array.isArray(data) ? data : []);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/therapists?${params.toString()}`);
+      const data = await res.json();
+      setTherapists(Array.isArray(data) ? data : []);
+    } catch {
+      setTherapists([]);
+    } finally {
+      setLoading(false);
+    }
   }, [selectedSpecialty, selectedInsurance]);
 
   useEffect(() => {
@@ -79,9 +87,23 @@ export default function TherapistsPage() {
                 ))}
               </select>
             </div>
+            {/* 地點（城市/州） */}
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">Location (City/State)</label>
+              <select
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="w-full rounded-lg border-slate-300 border px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Locations</option>
+                {LOCATIONS.map((loc) => (
+                  <option key={loc} value={loc}>{loc}</option>
+                ))}
+              </select>
+            </div>
             <div className="flex items-end">
               <button
-                onClick={() => { setSelectedSpecialty(''); setSelectedInsurance(''); }}
+                onClick={() => { setSelectedSpecialty(''); setSelectedInsurance(''); setSelectedLocation(''); }}
                 className="px-4 py-2 text-slate-600 hover:text-slate-800 text-sm"
               >
                 Clear Filters
@@ -97,7 +119,7 @@ export default function TherapistsPage() {
           <div className="text-center py-12">
             <p className="text-slate-500">No therapists found matching your criteria.</p>
             <button
-              onClick={() => { setSelectedSpecialty(''); setSelectedInsurance(''); }}
+              onClick={() => { setSelectedSpecialty(''); setSelectedInsurance(''); setSelectedLocation(''); }}
               className="mt-4 text-blue-600 hover:text-blue-700"
             >
               Clear filters
@@ -116,10 +138,14 @@ export default function TherapistsPage() {
 }
 
 function TherapistCard({ therapist }: { therapist: Therapist }) {
-  const specialties = therapist.specialties.split(',');
+  const specialties = therapist.specialties?.split(',') || [];
+  const languages = therapist.languages?.split(',') || ['English'];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow">
+    <Link
+      href={`/therapists/${therapist.id}`}
+      className="block bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+    >
       <div className="p-6">
         <div className="flex items-start gap-4">
           <img
@@ -140,16 +166,20 @@ function TherapistCard({ therapist }: { therapist: Therapist }) {
             </span>
           ))}
         </div>
+        {/* 語言欄位 */}
+        <div className="mt-3 text-xs text-slate-500 flex items-center gap-1">
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A5 5 0 0118 6v1a5 5 0 01-5.952 4.906M9 3v10a1 1 0 001 1h1a1 1 0 001-1V9.414" />
+          </svg>
+          {languages.map((l) => l.trim()).join(', ')}
+        </div>
         <div className="mt-4 text-xs text-slate-500">
           Accepts: {therapist.insuranceAccepted}
         </div>
-        <Link
-          href={`/therapists/${therapist.id}`}
-          className="mt-4 block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
+        <div className="mt-4 w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors">
           View Profile & Book
-        </Link>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

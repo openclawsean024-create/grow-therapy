@@ -142,46 +142,58 @@ export default function InsurancePage() {
 
           {/* Result */}
           {result && (
-            <div className={`px-6 pb-6 ${result.covered ? 'bg-blue-50' : 'bg-red-50'}`}>
-              <div className={`p-4 rounded-lg border ${result.covered ? 'border-blue-200' : 'border-red-200'}`}>
+            <div className={`px-6 pb-6 ${result.covered ? 'bg-emerald-50' : 'bg-amber-50'}`}>
+              <div className={`p-4 rounded-lg border ${
+                result.covered
+                  ? 'border-emerald-200 bg-emerald-50'
+                  : 'border-amber-200 bg-amber-50'
+              }`}>
                 <div className="flex items-start gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    result.covered ? 'bg-blue-100' : 'bg-red-100'
+                  {/* In-Network: green checkmark | Out-of-Network: amber ⚠️ */}
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    result.covered ? 'bg-emerald-100' : 'bg-amber-100'
                   }`}>
                     {result.covered ? (
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      // Green checkmark SVG
+                      <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      // Amber ⚠️ SVG
+                      <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     )}
                   </div>
                   <div className="flex-1">
-                    <h3 className={`font-semibold ${result.covered ? 'text-blue-800' : 'text-red-800'}`}>
-                      {result.covered ? 'Coverage Confirmed' : 'Not Covered'}
+                    <h3 className={`font-semibold text-lg ${result.covered ? 'text-emerald-800' : 'text-amber-800'}`}>
+                      {result.covered ? 'In-Network' : 'Out-of-Network'}
                     </h3>
-                    <p className={`text-sm mt-1 ${result.covered ? 'text-blue-700' : 'text-red-700'}`}>
+                    <p className={`text-sm mt-1 ${result.covered ? 'text-emerald-700' : 'text-amber-700'}`}>
                       {result.message}
                     </p>
+
                     {result.covered && (
-                      <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-                        <div className="bg-white/60 rounded-lg p-3">
-                          <div className="text-slate-500">Copay</div>
-                          <div className="font-semibold text-slate-800">${result.copayAmount}</div>
-                        </div>
-                        <div className="bg-white/60 rounded-lg p-3">
-                          <div className="text-slate-500">Coverage</div>
-                          <div className="font-semibold text-slate-800">{result.coveragePercent}%</div>
-                        </div>
-                        {result.maxSessionsPerYear && (
-                          <div className="bg-white/60 rounded-lg p-3 col-span-2">
-                            <div className="text-slate-500">Max Sessions/Year</div>
-                            <div className="font-semibold text-slate-800">{result.maxSessionsPerYear}</div>
+                      <>
+                        <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
+                          <div className="bg-white/60 rounded-lg p-3">
+                            <div className="text-slate-500">Copay</div>
+                            <div className="font-semibold text-slate-800">${result.copayAmount}</div>
+                            {/* Disclaimer */}
+                            <div className="text-xs text-slate-400 mt-1">實際金額以保險公司認定為準</div>
                           </div>
-                        )}
-                      </div>
+                          <div className="bg-white/60 rounded-lg p-3">
+                            <div className="text-slate-500">Coverage</div>
+                            <div className="font-semibold text-slate-800">{result.coveragePercent}%</div>
+                          </div>
+                          {result.maxSessionsPerYear && (
+                            <div className="bg-white/60 rounded-lg p-3 col-span-2">
+                              <div className="text-slate-500">Max Sessions/Year</div>
+                              <div className="font-semibold text-slate-800">{result.maxSessionsPerYear}</div>
+                            </div>
+                          )}
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
